@@ -38,10 +38,8 @@ OUT_DIR = "outputs"
 os.makedirs(OUT_DIR, exist_ok=True)
 sns.set_style("whitegrid")
 
-
-# ----------------------------------------------------------------------
 # 1. Carregamento e limpeza
-# ----------------------------------------------------------------------
+
 def load_and_clean(path="data/telco_churn.csv"):
     df = pd.read_csv(path)
 
@@ -53,10 +51,7 @@ def load_and_clean(path="data/telco_churn.csv"):
     df = df.drop(columns=["customerID"])
     return df
 
-
-# ----------------------------------------------------------------------
-# 2. EDA rápida (salva gráficos em outputs/)
-# ----------------------------------------------------------------------
+# 2. EDA 
 def run_eda(df):
     churn_rate = df["Churn"].value_counts(normalize=True) * 100
     print("\nTaxa de churn:")
@@ -83,10 +78,8 @@ def run_eda(df):
 
     print(f"Gráficos de EDA salvos em {OUT_DIR}/")
 
-
-# ----------------------------------------------------------------------
 # 3. Pré-processamento
-# ----------------------------------------------------------------------
+
 def preprocess(df):
     df = df.copy()
     target = df["Churn"].map({"Yes": 1, "No": 0})
@@ -97,10 +90,8 @@ def preprocess(df):
 
     return df_encoded, target
 
-
-# ----------------------------------------------------------------------
 # 4. Treinamento com SMOTE (balanceamento de classes)
-# ----------------------------------------------------------------------
+
 def train_models(X, y):
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.25, random_state=42, stratify=y
@@ -141,9 +132,8 @@ def train_models(X, y):
     return results, X_train, X_test, X_test_scaled, y_test, scaler
 
 
-# ----------------------------------------------------------------------
 # 5. Curva ROC comparando os modelos
-# ----------------------------------------------------------------------
+
 def plot_roc(results, y_test):
     plt.figure(figsize=(6, 5))
     for name, res in results.items():
@@ -159,9 +149,9 @@ def plot_roc(results, y_test):
     print(f"\nCurva ROC salva em {OUT_DIR}/04_roc_curve.png")
 
 
-# ----------------------------------------------------------------------
+
 # 6. Interpretabilidade com SHAP (Random Forest)
-# ----------------------------------------------------------------------
+
 def run_shap(results, X_train, X_test_scaled, X_columns):
     rf_model = results["Random Forest"]["model"]
 
